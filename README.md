@@ -22,6 +22,6 @@ If you want to change the path you can do so on the global variables on the top 
 
 As of now, pytube has some problems in its regex searches and ability to search only by a keyword but it is being solved on their side
 
-Hope you enjoy it and find it useful
+Hope you enjoy it and find it useful!
 
 ###### This was made using the pytube library and you have to have ffmpeg installed => https://www.ffmpeg.org/ and set in your ambient variables.
