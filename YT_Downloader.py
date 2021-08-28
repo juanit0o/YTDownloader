@@ -133,14 +133,9 @@ def main():
         titleVideo = yt.title.replace("|", "-")
         titleVideo = yt.title.replace("+", "-")
 
-        print("AAAAA  " + titleVideo)
-
         #Only audio
         if(choice == 1):
             onlyAudio(yt, titleVideo, False, None)
-        
-        #TODO No caso do video, falta fazer a verificacao de resolucoes mais altas, fazer merge com ffmpeg do audio e do video e apagar aux
-        #TODO playlists tbm para videos
 
         #Highest quality video
         elif(choice == 2):  
@@ -176,7 +171,7 @@ def main():
             main()
         elif(lastChoice == 2):
             print("Bye!")
-            return
+            exit()
         else:
             print("Wrong input :(\nTry again")
             main()
@@ -186,7 +181,7 @@ def main():
         print("Playlist Title: " + ytPlaylist.title)
         print("\nOnly audios? Press 1\nHigh quality videos? Press 2\nAverage quality videos? Press 3\nLowest quality videos? Press 4\nQuit? Press 5")
         playlistChoice = int(input())
-        #Create folder for playlist
+        
         for url in ytPlaylist.video_urls:
             try:
                 yt = pytube.YouTube(url)
@@ -213,6 +208,7 @@ def main():
                     lowestQualityVideo(yt, individualVideoTitle, True, ytPlaylist.title)
                 elif(playlistChoice == 5):
                     print("Bye!")
+                    exit()
                     return
                 else:
                     print("Wrong input :(\nTry again")
@@ -228,13 +224,10 @@ def main():
             main()
         elif(lastChoice == 2):
             print("Bye!")
-            return
+            exit()
         else:
             print("Wrong input :(\nTry again")
             main()
-
-            #print('Downloading video: ' + yt.title) #tratar de download
-            #yt.streams.first().download()
         
 
     else: #if just words
@@ -243,6 +236,7 @@ def main():
         ytSearch = pytube.Search(videoLink)
         print (ytSearch.results[0]) #most likely
         video = ytSearch.results[0]
+        
         #METAINFO from the video with pytube
         print("Video Title: ",video.title)
         print("Views: ",video.views)
@@ -281,7 +275,7 @@ def main():
         #Quit
         elif (choice == 5):
             print("Bye!")
-            return
+            exit()
         else:
             print("Wrong input :(\nTry again")
             main() 
