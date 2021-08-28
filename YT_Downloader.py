@@ -123,15 +123,8 @@ def main():
         #2 = Video
         print("Only audio? Press 1\nHighest quality video? Press 2\nAverage quality video? Press 3\nLowest quality video? Press 4\nQuit? Press 5")
         choice = int(input())
-        
-        titleVideo = yt.title.replace("\"", "-") #Problems with using quotes and slashes in paths
-        titleVideo = yt.title.replace("/\"", "-")
-        titleVideo = yt.title.replace("\"", "-")
-        titleVideo = yt.title.replace("/", "-")
-        titleVideo = yt.title.replace(":", "-")
-        titleVideo = yt.title.replace(".", "-")
-        titleVideo = yt.title.replace("|", "-")
-        titleVideo = yt.title.replace("+", "-")
+
+        titleVideo = "".join( x for x in yt.title if (x.isalnum() or x in "._- ,()"))
 
         #Only audio
         if(choice == 1):
@@ -190,13 +183,7 @@ def main():
                 print('Video ' + yt.title + ' is unavailable, skipping.')
             else:
 
-                #Remove quotes from titles
-                individualVideoTitle = yt.title.replace("\"", "-")
-                individualVideoTitle = yt.title.replace("/\"", "-")
-                individualVideoTitle = yt.title.replace("\"", "-")
-                individualVideoTitle = yt.title.replace("/", "-")
-                individualVideoTitle = yt.title.replace(":", "-")
-                individualVideoTitle = yt.title.replace(".", "-")
+                individualVideoTitle = "".join( x for x in yt.title if (x.isalnum() or x in "._- ,()"))
                 
                 if(playlistChoice == 1):
                     onlyAudio(yt, individualVideoTitle, True, ytPlaylist.title)
@@ -249,15 +236,7 @@ def main():
         print("Only audio? Press 1\nHighest quality video? Press 2\nAverage quality video? Press 3\nLowest quality video? Press 4\nQuit? Press 5")
         choice = int(input())
 
-        titleVideo = video.title.replace("\"", "-") #Problems with using quotes and slashes in paths
-        titleVideo = video.title.replace("/\"", "-")
-        titleVideo = video.title.replace("\"", "-")
-        titleVideo = video.title.replace("/", "-")
-        titleVideo = video.title.replace(":", "-")
-        titleVideo = video.title.replace(".", "-")
-        titleVideo = video.title.replace("+", "-")
-
-        titleVideo = str(titleVideo.replace("|", "-"))        
+        titleVideo = "".join( x for x in video.title if (x.isalnum() or x in "._- ,()"))       
 
         #Only audio
         if(choice == 1):
