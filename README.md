@@ -24,4 +24,4 @@ As of now, pytube has some problems in its regex searches and ability to search 
 
 Hope you enjoy it and find it useful!
 
-###### This was made using the pytube library and you have to have ffmpeg installed => https://www.ffmpeg.org/ and set in your ambient variables.
+###### This was made using the pytube library and you have to have <a href=https://www.ffmpeg.org/>ffmpeg</a> installed and set in your ambient variables.
