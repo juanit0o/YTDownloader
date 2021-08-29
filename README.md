@@ -19,9 +19,13 @@ If you want to change the path you can do so on the global variables on the top 
        <img src="https://i.imgur.com/rP3uzLh.png" width="500" height="100" alt="Layout of the website">
 </p>
 
+## Instructions
+* Install the executable file in your computer (under the releases tab)
+* Start downloading!
+No need to have python installed in your computer anymore, everything is packed in an executable file that can be run in any computer running Windows!
 
-As of now, pytube has some problems in its regex searches and ability to search only by a keyword but it is being solved on their side
+As of now, pytube has some problems in its regex searches and ability to search only by a keyword but it is being solved on their side (Fixed in 11.0.1).
 
 Hope you enjoy it and find it useful!
 
-###### This was made using the pytube library and you have to have <a href=https://www.ffmpeg.org/>ffmpeg</a> installed and set in your ambient variables to download the videos in their highest resolution (option inside the program).
+###### This was made using the pytube library and you have to have <a href=https://www.ffmpeg.org/>ffmpeg</a> installed and set in your ambient variables to download the videos in their highest resolution available.
