@@ -7,15 +7,31 @@ from time import sleep
 import ffmpeg
 import shutil
 import os
+from sys import exit
+import signal
+import sys
 
- #Default paths, change them if you prefer to store downloads elsewhere
+
+def signal_handler(signal, frame):
+  sys.exit(0)
+
+
+#Default paths, change them if you prefer to store downloads elsewhere
 music_output_path = "./Musics/"
 video_output_path = "./Videos/"
 temp_path = "./Temp/"
 
 def onlyAudio(yt, titleVideo, isPlaylist, playlistTitle):
+    
+    audio_streams = yt.streams.get_audio_only()
+    
+    length = audio_streams.filesize
+    generator = (3 * n for n in range(length))  # just doing something random
+    for n in tqdm(generator, total=length, unit='B', unit_scale=True, unit_divisor=1024):
+        pass
+    print("Almost done...")
+    
     if not (isPlaylist):
-        audio_streams = yt.streams.get_audio_only()
         audio_streams.download(filename = titleVideo + ".mp3", output_path = music_output_path)
         print("\nDownload finished!")
         print("Do you want to continue downloading?\nIf yes, press 1\nIf not, press 2")
@@ -32,7 +48,6 @@ def onlyAudio(yt, titleVideo, isPlaylist, playlistTitle):
             print("Wrong input :(\nTry again")
             main()
     else:
-        audio_streams = yt.streams.get_audio_only()
         audio_streams.download(filename = titleVideo + ".mp3", output_path = music_output_path + "/" + playlistTitle+"/")
 
 def highestQualityVideo(yt, titleVideo, isPlaylist, playlistTitle):
@@ -56,7 +71,11 @@ def highestQualityVideo(yt, titleVideo, isPlaylist, playlistTitle):
                 os.makedirs(outputHQPlaylistPath)
             ffmpeg.concat(ffmpeg_video, ffmpeg_audio, v=1, a=1).output(outputHQPlaylistPath + "/[HQ] " + titleVideo+ ".mp4").run()
         else:
-            ffmpeg.concat(ffmpeg_video, ffmpeg_audio, v=1, a=1).output(video_output_path +"/[HQ] " + titleVideo+ ".mp4").run()
+            formatedTitle = "".join( x for x in titleVideo if (x.isalnum() or x in "._- ,()"))
+            outputPath = video_output_path +  "[HQ]" + formatedTitle
+            if not os.path.exists(video_output_path):
+                os.makedirs(video_output_path)
+            ffmpeg.concat(ffmpeg_video, ffmpeg_audio, v=1, a=1).output(outputPath + ".mp4").run()
     except Exception as e:
         print(e)
         print("There was an error downloading the video, please try again")
@@ -66,23 +85,39 @@ def highestQualityVideo(yt, titleVideo, isPlaylist, playlistTitle):
             shutil.rmtree(temp_path)
         main()
 
+
 def averageQualityVideo(yt, titleVideo, isPlaylist, playlistTitle):
     averageQuality_streams = yt.streams.filter(progressive=True).order_by('resolution').desc()
     print(averageQuality_streams)
+    
+    
+    length = averageQuality_streams.first().filesize
+    generator = (3 * n for n in range(length))  # just doing something random
+    for n in tqdm(generator, total=length, unit='B', unit_scale=True, unit_divisor=1024):
+        pass
+    print("Almost done...")
+
     if not isPlaylist:
         averageQuality_streams.first().download(filename = "[AQ] " + titleVideo + ".mp4", output_path = video_output_path)
+          
     else:
         outputAQPlaylistPath = video_output_path + "[AQ] " + playlistTitle
-        print("DIR  " + outputAQPlaylistPath)
         if not os.path.exists(outputAQPlaylistPath):
             os.makedirs(outputAQPlaylistPath)
-            print("MADE DIR  " + outputAQPlaylistPath)
         averageQuality_streams.first().download(filename = "[AQ] " + titleVideo + ".mp4", output_path = outputAQPlaylistPath)
 
 def lowestQualityVideo(yt, titleVideo, isPlaylist, playlistTitle):
     #Progressive contains both video and audio
     lowestQuality_stream = yt.streams.filter(progressive=True).order_by('resolution').asc().first() 
     print(lowestQuality_stream)
+
+    length = lowestQuality_stream.filesize
+    generator = (3 * n for n in range(length))  # just doing something random
+    for n in tqdm(generator, total=length, unit='B', unit_scale=True, unit_divisor=1024):
+        pass
+    print("Almost done...")
+
+
     if not isPlaylist:
         lowestQuality_stream.download(filename = "[LQ] " + titleVideo + ".mp4", output_path = video_output_path)
     else:
@@ -92,15 +127,16 @@ def lowestQualityVideo(yt, titleVideo, isPlaylist, playlistTitle):
         lowestQuality_stream.download(filename = "[LQ] " + titleVideo + ".mp4", output_path = outputLQPlaylistPath)
 
 
-def main():
 
-    #TODO possibilidade de procurar por nome e aparecer primeiro video?
+def main():
 
     #ask for the link from user
     videoLink = input("What is the URL/title of the video/playlist you wish to download:  ")
+    if(videoLink == None or videoLink == ""):
+        main()
     
     if((("https://y" in videoLink) or ("https://www" in videoLink)) and ("/playlist?list=" not in videoLink) and (("list" not in videoLink) or ("/watch" not in videoLink))): #If it isnt a playlist
-        print("Video")
+
         yt = pytube.YouTube(videoLink, on_progress_callback=on_progress)
         ytPafy = pafy.new(videoLink)
 
@@ -121,7 +157,7 @@ def main():
         #Check if you want to download Audio only or Video
         #1 = Audio only
         #2 = Video
-        print("Only audio? Press 1\nHighest quality video? Press 2\nAverage quality video? Press 3\nLowest quality video? Press 4\nQuit? Press 5")
+        print("Only audio? Press 1\nHighest quality video (ffmpeg must be installed beforehand)? Press 2\nAverage quality video? Press 3\nLowest quality video? Press 4\nQuit? Press 5")
         choice = int(input())
 
         titleVideo = "".join( x for x in yt.title if (x.isalnum() or x in "._- ,()"))
@@ -146,7 +182,7 @@ def main():
         #Quit
         elif (choice == 5):
             print("Bye!")
-            return
+            exit()
         
         else:
             print("Wrong input :(\nTry again")
@@ -196,7 +232,6 @@ def main():
                 elif(playlistChoice == 5):
                     print("Bye!")
                     exit()
-                    return
                 else:
                     print("Wrong input :(\nTry again")
                     main()
@@ -218,10 +253,8 @@ def main():
         
 
     else: #if just words
-        print("Keywords")
         print(videoLink)
         ytSearch = pytube.Search(videoLink)
-        print (ytSearch.results[0]) #most likely
         video = ytSearch.results[0]
         
         #METAINFO from the video with pytube
@@ -233,7 +266,7 @@ def main():
         print("====")
         print("Description: ",video.description)
         print("====")
-        print("Only audio? Press 1\nHighest quality video? Press 2\nAverage quality video? Press 3\nLowest quality video? Press 4\nQuit? Press 5")
+        print("Only audio? Press 1\nHighest quality video (ffmpeg must be installed beforehand)? Press 2\nAverage quality video? Press 3\nLowest quality video? Press 4\nQuit? Press 5")
         choice = int(input())
 
         titleVideo = "".join( x for x in video.title if (x.isalnum() or x in "._- ,()"))       
@@ -269,7 +302,7 @@ def main():
             main()
         elif(lastChoice == 2):
             print("Bye!")
-            return
+            exit()
         else:
             print("Wrong input :(\nTry again")
             main()
@@ -277,6 +310,7 @@ def main():
 
 if __name__ == "__main__":
     try:
+        signal.signal(signal.SIGINT, signal_handler)
         main()
     except IndexError:
         print("\tError executing the script")
